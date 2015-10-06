@@ -19,6 +19,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gogo/protobuf/proto"
 	"github.com/hashicorp/raft"
 	"github.com/influxdb/influxdb/influxql"
@@ -1643,7 +1644,8 @@ func (s *Store) remoteExec(b []byte) error {
 	// Retrieve the current known leader.
 	leader := s.raftState.leader()
 	if leader == "" {
-		s.Logger.Println("remoteExec raftState has no leader")
+		log.Println("remoteExec raftState has no leader")
+		spew.Dump(s.raftState)
 		return errors.New("no leader detected during remoteExec")
 	}
 
