@@ -413,6 +413,12 @@ func (s *Store) enabledLocalRaftIfNecessary() error {
 		return err
 	}
 
+	// If there is only one peer there is nothing to do, as it is acting
+	// in single raft mode
+	if len(peers) == 1 {
+		return nil
+	}
+
 	ni, err := s.Node(s.id)
 	if ni == nil {
 		return nil
