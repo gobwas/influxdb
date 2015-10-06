@@ -241,8 +241,8 @@ func (s *Store) Open() error {
 	s.wg.Add(1)
 	go s.serveRPCListener()
 
-	//s.wg.Add(1)
-	//go s.monitorPeerHealth()
+	s.wg.Add(1)
+	go s.monitorPeerHealth()
 
 	// Join an existing cluster if we needed
 	if err := s.joinCluster(); err != nil {
@@ -448,9 +448,9 @@ func (s *Store) monitorPeerHealth() {
 		}
 
 		// Need to see if we were promoted, but still have a local raft.
-		if err := s.enabledLocalRaftIfNecessary(); err != nil {
-			s.Logger.Printf("error changing raft state: %s", err)
-		}
+		//if err := s.enabledLocalRaftIfNecessary(); err != nil {
+		//s.Logger.Printf("error changing raft state: %s", err)
+		//}
 	}
 }
 
