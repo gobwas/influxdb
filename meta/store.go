@@ -241,8 +241,8 @@ func (s *Store) Open() error {
 	s.wg.Add(1)
 	go s.serveRPCListener()
 
-	s.wg.Add(1)
-	go s.monitorPeerHealth()
+	//s.wg.Add(1)
+	//go s.monitorPeerHealth()
 
 	// Join an existing cluster if we needed
 	if err := s.joinCluster(); err != nil {
