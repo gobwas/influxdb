@@ -420,9 +420,15 @@ func (s *Store) enabledLocalRaftIfNecessary() error {
 	if err != nil {
 		return err
 	}
-	if !contains(peers, ni.Host) {
+
+	s.mu.RLock()
+	// Make sure we haven't already promoted ourselves
+	_, isLocalRaft := s.raftState.(*localRaft)
+	if !contains(peers, ni.Host) || isLocalRaft {
+		s.mu.RUnlock()
 		return nil
 	}
+	s.mu.RUnlock()
 
 	return s.enableLocalRaft()
 }
@@ -447,10 +453,10 @@ func (s *Store) monitorPeerHealth() {
 			s.Logger.Printf("error promoting random node to raft peer: %s", err)
 		}
 
-		// Need to see if we were promoted, but still have a local raft.
-		//if err := s.enabledLocalRaftIfNecessary(); err != nil {
-		//s.Logger.Printf("error changing raft state: %s", err)
-		//}
+		//Need to see if we were promoted, but still have a local raft.
+		if err := s.enabledLocalRaftIfNecessary(); err != nil {
+			s.Logger.Printf("error changing raft state: %s", err)
+		}
 	}
 }
 
