@@ -1631,7 +1631,7 @@ func (s *Store) remoteExec(b []byte) error {
 	// Retrieve the current known leader.
 	leader := s.raftState.leader()
 	if leader == "" {
-		return errors.New("no leader")
+		return errors.New("no leader detected during remoteExec")
 	}
 
 	// Create a connection to the leader.
