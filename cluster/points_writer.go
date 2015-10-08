@@ -107,6 +107,10 @@ type PointsWriter struct {
 		WriteShard(shardID, ownerID uint64, points []models.Point) error
 	}
 
+	Subscriber interface {
+		WritePoints(p *WritePointsRequest)
+	}
+
 	statMap *expvar.Map
 }
 
@@ -232,6 +236,9 @@ func (w *PointsWriter) WritePoints(p *WritePointsRequest) error {
 			ch <- w.writeToShard(shard, p.Database, p.RetentionPolicy, p.ConsistencyLevel, points)
 		}(shardMappings.Shards[shardID], p.Database, p.RetentionPolicy, points)
 	}
+
+	// Fire and forget points to Subscriber
+	go w.Subscriber.WritePoints(p)
 
 	for range shardMappings.Points {
 		select {
