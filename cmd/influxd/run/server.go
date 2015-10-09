@@ -289,6 +289,7 @@ func (s *Server) appendUDPService(c udp.Config) {
 	}
 	srv := udp.NewService(c)
 	srv.PointsWriter = s.PointsWriter
+	srv.MetaStore = s.MetaStore
 	s.Services = append(s.Services, srv)
 }
 
